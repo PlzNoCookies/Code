@@ -773,7 +773,7 @@ function initGuitarBuilder() {
         ).join('');
     }
 
-    // Populate body shape selector
+    // Populate body shape selector (text-only with links)
     function populateBodyShapeSelector() {
         const selector = document.getElementById('body-shape-selector');
         if (!selector) return;
@@ -788,7 +788,24 @@ function initGuitarBuilder() {
             option.dataset.shape = shape.name;
             option.title = shape.description;
 
-            option.addEventListener('click', () => {
+            // Create text-based option with link
+            option.innerHTML = `
+                <div class="shape-content">
+                    <div class="shape-name">${shape.name}</div>
+                    <div class="shape-description">${shape.description}</div>
+                    <a href="guitar-showcase.html?shape=${shape.value}&type=${guitarConfig.type}"
+                       class="shape-link"
+                       target="_blank"
+                       onclick="event.stopPropagation()">
+                        View 3 ${shape.name} Guitars →
+                    </a>
+                </div>
+            `;
+
+            option.addEventListener('click', (e) => {
+                // Don't trigger if clicking the link
+                if (e.target.classList.contains('shape-link')) return;
+
                 guitarConfig.shape = shape.value;
                 updateBodyShapeSelection();
                 updateShapeInfo(shape);
@@ -895,152 +912,32 @@ function initGuitarBuilder() {
         toneBars[2].style.width = `${characteristics.sustain}%`;
     }
 
-    // Simplified guitar visual update
+    // Simplified guitar update (no visual model)
     function updateGuitarVisual() {
-        const guitarSvg = document.querySelector('.guitar-svg');
-        const electricBody = document.getElementById('electric-body');
-        const acousticBody = document.getElementById('acoustic-body');
-        const bassBody = document.getElementById('bass-body');
-        const pickups = document.getElementById('pickups');
-        const controls = document.getElementById('controls');
-        const stringsGroup = document.getElementById('guitar-strings');
-
-        if (!guitarSvg) return;
-
-        // Hide all body types first
-        if (electricBody) electricBody.style.display = 'none';
-        if (acousticBody) acousticBody.style.display = 'none';
-        if (bassBody) bassBody.style.display = 'none';
-
-        // Show appropriate body type and components
-        switch (guitarConfig.type) {
-            case 'electric':
-                if (electricBody) electricBody.style.display = 'block';
-                if (pickups) pickups.style.display = 'block';
-                if (controls) controls.style.display = 'block';
-                break;
-            case 'acoustic':
-                if (acousticBody) acousticBody.style.display = 'block';
-                if (pickups) pickups.style.display = 'none';
-                if (controls) controls.style.display = 'none';
-                break;
-            case 'bass':
-                if (bassBody) bassBody.style.display = 'block';
-                if (pickups) pickups.style.display = 'block';
-                if (controls) controls.style.display = 'block';
-                break;
-        }
-
-        // Update colors and patterns
-        updateSimpleColors();
-
-        // Update string configuration
-        updateSimpleStringConfiguration();
-
-        // Add smooth transition animation
-        if (guitarSvg) {
-            guitarSvg.style.transform = 'scale(0.98)';
-            setTimeout(() => {
-                guitarSvg.style.transform = 'scale(1)';
-            }, 150);
-        }
+        // Just update the text display - no 3D model
+        updateGuitarSpecs();
     }
 
-    // Simplified color updates
-    function updateSimpleColors() {
-        const woodColors = {
-            'alder': '#DEB887',
-            'mahogany': '#8B4513',
-            'maple': '#FFEBCD',
-            'ash': '#F5DEB3',
-            'basswood': '#DEB887',
-            'spruce': '#DEB887',
-            'cedar': '#8B4513',
-            'rosewood': '#654321'
-        };
+    // Update guitar specifications display
+    function updateGuitarSpecs() {
+        const specType = document.getElementById('spec-type');
+        const specStrings = document.getElementById('spec-strings');
+        const specBody = document.getElementById('spec-body');
+        const specWood = document.getElementById('spec-wood');
 
-        const neckColors = {
-            'maple': '#FFEBCD',
-            'mahogany': '#8B4513',
-            'rosewood': '#654321'
-        };
-
-        // Update body colors for all guitar types
-        const bodyElements = [
-            '#electric-body #guitar-body',
-            '#acoustic-body ellipse',
-            '#bass-body rect'
-        ];
-
-        bodyElements.forEach(selector => {
-            const element = document.querySelector(selector);
-            if (element) {
-                element.setAttribute('fill', woodColors[guitarConfig.bodyWood] || woodColors.alder);
-            }
-        });
-
-        // Update neck colors
-        const neck = document.getElementById('guitar-neck');
-        const headstock = document.getElementById('guitar-headstock');
-
-        if (neck) {
-            neck.setAttribute('fill', neckColors[guitarConfig.neckWood] || neckColors.maple);
+        if (specType) {
+            specType.textContent = guitarConfig.type.charAt(0).toUpperCase() + guitarConfig.type.slice(1);
         }
-        if (headstock) {
-            headstock.setAttribute('fill', neckColors[guitarConfig.neckWood] || neckColors.maple);
+        if (specStrings) {
+            const stringConfig = stringConfigs[guitarConfig.strings];
+            specStrings.textContent = stringConfig ? stringConfig.name : '6-String';
         }
-    }
-
-    // Simplified string configuration
-    function updateSimpleStringConfiguration() {
-        const stringsGroup = document.getElementById('guitar-strings');
-        if (!stringsGroup) return;
-
-        // Clear existing strings
-        stringsGroup.innerHTML = '';
-
-        const stringConfig = stringConfigs[guitarConfig.strings];
-        if (!stringConfig) return;
-
-        const stringCount = stringConfig.count;
-        const startX = 110;
-        const endX = 135;
-        const spacing = stringCount > 1 ? (endX - startX) / (stringCount - 1) : 0;
-
-        for (let i = 0; i < stringCount; i++) {
-            const x = stringCount === 1 ? (startX + endX) / 2 : startX + (i * spacing);
-
-            const string = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-            string.setAttribute('x1', x);
-            string.setAttribute('y1', '50');
-            string.setAttribute('x2', x);
-            string.setAttribute('y2', '500');
-            string.setAttribute('stroke', '#e8e8e8');
-            string.setAttribute('stroke-width', '1');
-            string.setAttribute('opacity', '0.8');
-
-            stringsGroup.appendChild(string);
+        if (specBody) {
+            specBody.textContent = guitarConfig.shape.charAt(0).toUpperCase() + guitarConfig.shape.slice(1);
         }
-    }
-
-    // Simplified hardware color update
-    function updateHardwareColor() {
-        const tuningPegs = document.querySelectorAll('#tuning-pegs circle');
-        const bridge = document.querySelector('#bridge-group rect');
-        const controls = document.querySelectorAll('#controls circle');
-
-        const hardwareColors = {
-            chrome: '#c0c0c0',
-            gold: '#ffd700',
-            black: '#2c2c2c',
-            vintage: '#d4af37'
-        };
-
-        const color = hardwareColors[guitarConfig.hardware] || hardwareColors.chrome;
-
-        tuningPegs.forEach(peg => peg.setAttribute('fill', color));
-        if (bridge) bridge.setAttribute('fill', color);
-        controls.forEach(control => control.setAttribute('fill', color));
+        if (specWood) {
+            specWood.textContent = guitarConfig.bodyWood.charAt(0).toUpperCase() + guitarConfig.bodyWood.slice(1);
+        }
     }
 
     // Update configuration summary

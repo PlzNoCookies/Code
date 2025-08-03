@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guitar Showcase - Harmony Hub</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .showcase-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--space-2xl);
+        }
+
+        .showcase-header {
+            text-align: center;
+            margin-bottom: var(--space-3xl);
+        }
+
+        .showcase-title {
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            color: var(--gray-900);
+            margin-bottom: var(--space-md);
+        }
+
+        .showcase-subtitle {
+            font-size: 1.2rem;
+            color: var(--gray-600);
+            margin-bottom: var(--space-lg);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            padding: var(--space-sm) var(--space-md);
+            border: 2px solid var(--primary-color);
+            border-radius: var(--radius-md);
+            transition: all var(--transition-normal);
+        }
+
+        .back-link:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .guitars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--space-2xl);
+            margin-bottom: var(--space-3xl);
+        }
+
+        .guitar-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            transition: transform var(--transition-normal);
+        }
+
+        .guitar-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .guitar-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, var(--gray-50), var(--gray-100));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-lg);
+        }
+
+        .guitar-svg {
+            width: 100%;
+            height: 100%;
+            max-width: 120px;
+            max-height: 220px;
+        }
+
+        .guitar-info {
+            padding: var(--space-xl);
+        }
+
+        .guitar-name {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            color: var(--gray-900);
+            margin-bottom: var(--space-sm);
+        }
+
+        .guitar-brand {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+        }
+
+        .guitar-description {
+            color: var(--gray-600);
+            line-height: 1.6;
+            margin-bottom: var(--space-lg);
+        }
+
+        .guitar-specs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-sm);
+            margin-bottom: var(--space-lg);
+        }
+
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--space-xs) 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .spec-label {
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        .spec-value {
+            color: var(--gray-900);
+        }
+
+        .guitar-price {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: var(--space-md);
+        }
+
+        .guitar-actions {
+            display: flex;
+            gap: var(--space-sm);
+        }
+
+        .btn-primary, .btn-secondary {
+            flex: 1;
+            padding: var(--space-md);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            transition: all var(--transition-normal);
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .showcase-container {
+                padding: var(--space-lg);
+            }
+
+            .showcase-title {
+                font-size: 2rem;
+            }
+
+            .guitars-grid {
+                grid-template-columns: 1fr;
+                gap: var(--space-xl);
+            }
+
+            .guitar-specs {
+                grid-template-columns: 1fr;
+            }
+
+            .guitar-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="showcase-container">
+        <div class="showcase-header">
+            <h1 class="showcase-title" id="showcase-title">Guitar Showcase</h1>
+            <p class="showcase-subtitle" id="showcase-subtitle">Discover amazing guitars in this shape</p>
+            <a href="index.html#guitar-builder" class="back-link">
+                ← Back to Guitar Builder
+            </a>
+        </div>
+
+        <div class="guitars-grid" id="guitars-grid">
+            <!-- Guitars will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Guitar database with examples for each shape
+        const guitarDatabase = {
+            // Electric Guitar Shapes
+            stratocaster: [
+                {
+                    name: "Player Stratocaster",
+                    brand: "Fender",
+                    description: "The iconic Stratocaster sound with modern playability. Perfect for rock, blues, and pop music.",
+                    price: "$849",
+                    specs: {
+                        "Body": "Alder",
+                        "Neck": "Maple",
+                        "Pickups": "Player Series Alnico 5",
+                        "Bridge": "2-Point Tremolo"
+                    },
+                    image: "fender-player-strat"
+                },
+                {
+                    name: "American Professional II Stratocaster",
+                    brand: "Fender",
+                    description: "Premium American-made Stratocaster with V-Mod II pickups and enhanced comfort.",
+                    price: "$1,799",
+                    specs: {
+                        "Body": "Alder",
+                        "Neck": "Maple",
+                        "Pickups": "V-Mod II Single-Coil",
+                        "Bridge": "2-Point Synchronized Tremolo"
+                    },
+                    image: "fender-player-strat"
+                },
+                {
+                    name: "ST-20HSS SBK Standard Series",
+                    brand: "Harley Benton",
+                    description: "Affordable Stratocaster-style guitar with HSS pickup configuration. Great value for beginners and budget-conscious players.",
+                    price: "£98",
+                    specs: {
+                        "Body": "Poplar",
+                        "Neck": "Maple",
+                        "Pickups": "HSS Configuration",
+                        "Bridge": "Vintage-Style Tremolo"
+                    },
+                    image: "fender-player-strat"
+                },
+                {
+                    name: "Eric Clapton Stratocaster",
+                    brand: "Fender",
+                    description: "Signature model with vintage-inspired tone and Clapton's preferred specifications.",
+                    price: "$2,299",
+                    specs: {
+                        "Body": "Alder",
+                        "Neck": "Maple",
+                        "Pickups": "Vintage Noiseless",
+                        "Bridge": "Vintage-Style Tremolo"
+                    },
+                    image: "fender-player-strat"
+                }
+            ],
+            "les-paul": [
+                {
+                    name: "Les Paul Standard 50s",
+                    brand: "Gibson",
+                    description: "Classic Les Paul with vintage 50s specifications and modern reliability.",
+                    price: "$2,799",
+                    specs: {
+                        "Body": "Mahogany",
+                        "Top": "Maple",
+                        "Pickups": "Burstbucker 1 & 2",
+                        "Bridge": "Tune-O-Matic"
+                    },
+                    image: "gibson-les-paul-standard"
+                },
+                {
+                    name: "New Jersey Electric Guitar",
+                    brand: "Gear4music",
+                    description: "Affordable Les Paul-style guitar with stunning black and cream finish. Great value for beginners and intermediate players.",
+                    price: "£149.99",
+                    specs: {
+                        "Body": "Basswood",
+                        "Neck": "Maple",
+                        "Pickups": "Dual Humbuckers",
+                        "Bridge": "Tune-O-Matic Style"
+                    },
+                    image: "gibson-les-paul-standard"
+                },
+                {
+                    name: "Les Paul Studio",
+                    brand: "Gibson",
+                    description: "Affordable Les Paul with all the essential features and great tone.",
+                    price: "$1,599",
+                    specs: {
+                        "Body": "Mahogany",
+                        "Neck": "Mahogany",
+                        "Pickups": "490R & 498T",
+                        "Bridge": "Tune-O-Matic"
+                    },
+                    image: "gibson-les-paul-standard"
+                },
+                {
+                    name: "Jimmy Page Les Paul",
+                    brand: "Gibson",
+                    description: "Signature model recreating Page's legendary 'Number One' Les Paul.",
+                    price: "$4,999",
+                    specs: {
+                        "Body": "Mahogany",
+                        "Top": "Maple",
+                        "Pickups": "Jimmy Page Humbuckers",
+                        "Bridge": "Tune-O-Matic"
+                    },
+                    image: "gibson-les-paul-standard"
+                }
+            ],
+            telecaster: [
+                {
+                    name: "Player Telecaster",
+                    brand: "Fender",
+                    description: "Classic Telecaster twang with modern appointments and reliable performance.",
+                    price: "$799",
+                    specs: {
+                        "Body": "Alder",
+                        "Neck": "Maple",
+                        "Pickups": "Player Series Alnico 5",
+                        "Bridge": "6-Saddle String-Through"
+                    },
+                    image: "fender-telecaster"
+                },
+                {
+                    name: "American Professional II Telecaster",
+                    brand: "Fender",
+                    description: "Premium Telecaster with V-Mod II pickups and enhanced playability.",
+                    price: "$1,749",
+                    specs: {
+                        "Body": "Alder",
+                        "Neck": "Maple",
+                        "Pickups": "V-Mod II Telecaster",
+                        "Bridge": "6-Saddle String-Through"
+                    },
+                    image: "fender-telecaster"
+                },
+                {
+                    name: "Brad Paisley Telecaster",
+                    brand: "Fender",
+                    description: "Signature model with custom electronics and Paisley's preferred setup.",
+                    price: "$2,199",
+                    specs: {
+                        "Body": "Alder",
+                        "Neck": "Maple",
+                        "Pickups": "Custom Shop Twisted Tele",
+                        "Bridge": "6-Saddle String-Through"
+                    },
+                    image: "fender-telecaster"
+                }
+            ],
+            // Acoustic Guitar Shapes
+            dreadnought: [
+                {
+                    name: "D-28 Dreadnought",
+                    brand: "Martin",
+                    description: "The legendary Martin dreadnought with powerful bass and clear trebles.",
+                    price: "$3,199",
+                    specs: {
+                        "Top": "Sitka Spruce",
+                        "Back/Sides": "East Indian Rosewood",
+                        "Neck": "Mahogany",
+                        "Scale": "25.4 inches"
+                    },
+                    image: "martin-d28"
+                },
+                {
+                    name: "J-45 Standard",
+                    brand: "Gibson",
+                    description: "Iconic Gibson acoustic with warm, woody tone perfect for singer-songwriters.",
+                    price: "$2,499",
+                    specs: {
+                        "Top": "Sitka Spruce",
+                        "Back/Sides": "Walnut",
+                        "Neck": "Mahogany",
+                        "Scale": "24.75 inches"
+                    },
+                    image: "gibson-j45"
+                },
+                {
+                    name: "HD-28 Dreadnought",
+                    brand: "Martin",
+                    description: "Premium dreadnought with herringbone trim and exceptional projection.",
+                    price: "$3,799",
+                    specs: {
+                        "Top": "Sitka Spruce",
+                        "Back/Sides": "East Indian Rosewood",
+                        "Neck": "Mahogany",
+                        "Scale": "25.4 inches"
+                    },
+                    image: "martin-d28"
+                }
+            ]
+        };
+
+        // Get URL parameters
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Initialize the showcase
+        function initShowcase() {
+            const shape = getUrlParameter('shape') || 'stratocaster';
+            const type = getUrlParameter('type') || 'electric';
+            
+            // Update title and subtitle
+            const title = document.getElementById('showcase-title');
+            const subtitle = document.getElementById('showcase-subtitle');
+            
+            const shapeName = shape.charAt(0).toUpperCase() + shape.slice(1).replace('-', ' ');
+            title.textContent = `${shapeName} Guitars`;
+
+            // Get the number of guitars for this shape
+            const guitarCount = guitarDatabase[shape] ? guitarDatabase[shape].length : 3;
+            subtitle.textContent = `Discover ${guitarCount} amazing ${shapeName.toLowerCase()} guitars from top brands`;
+            
+            // Load guitars for this shape
+            loadGuitars(shape);
+        }
+
+        // Load and display guitars
+        function loadGuitars(shape) {
+            const guitarsGrid = document.getElementById('guitars-grid');
+            const guitars = guitarDatabase[shape] || guitarDatabase.stratocaster;
+            
+            guitarsGrid.innerHTML = '';
+            
+            guitars.forEach(guitar => {
+                const guitarCard = createGuitarCard(guitar);
+                guitarsGrid.appendChild(guitarCard);
+            });
+        }
+
+        // Create guitar card element
+        function createGuitarCard(guitar) {
+            const card = document.createElement('div');
+            card.className = 'guitar-card';
+            
+            card.innerHTML = `
+                <div class="guitar-image">
+                    <svg class="guitar-svg">
+                        <use href="images/guitar-models.svg#${guitar.image}"></use>
+                    </svg>
+                </div>
+                <div class="guitar-info">
+                    <div class="guitar-brand">${guitar.brand}</div>
+                    <h3 class="guitar-name">${guitar.name}</h3>
+                    <p class="guitar-description">${guitar.description}</p>
+                    <div class="guitar-specs">
+                        ${Object.entries(guitar.specs).map(([key, value]) => `
+                            <div class="spec-item">
+                                <span class="spec-label">${key}:</span>
+                                <span class="spec-value">${value}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="guitar-price">${guitar.price}</div>
+                    <div class="guitar-actions">
+                        <a href="#" class="btn-primary">View Details</a>
+                        <a href="#" class="btn-secondary">Compare</a>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initShowcase);
+    </script>
+</body>
+</html>
