@@ -773,7 +773,53 @@ function initGuitarBuilder() {
         ).join('');
     }
 
-    // Populate body shape selector (text-only with links)
+    // Guitar shape SVG definitions
+    const guitarShapeSVGs = {
+        stratocaster: `<svg class="shape-svg" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+            <path d="M30 20 Q35 15 45 15 Q55 15 60 20 L65 25 Q70 30 70 40 L70 80 Q70 90 65 95 L60 100 Q55 105 45 105 Q35 105 30 100 L25 95 Q20 90 20 80 L20 40 Q20 30 25 25 Z M45 25 Q50 25 50 30 Q50 35 45 35 Q40 35 40 30 Q40 25 45 25 Z"/>
+        </svg>`,
+        'les-paul': `<svg class="shape-svg" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+            <path d="M25 20 Q30 15 40 15 Q60 15 70 20 Q75 25 75 35 L75 80 Q75 90 70 95 Q65 100 55 100 L35 100 Q25 100 20 95 Q15 90 15 80 L15 35 Q15 25 20 20 Z M40 25 Q45 25 45 30 Q45 35 40 35 Q35 35 35 30 Q35 25 40 25 Z"/>
+        </svg>`,
+        telecaster: `<svg class="shape-svg" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+            <path d="M28 18 L62 18 Q68 18 72 22 Q76 26 76 32 L76 88 Q76 94 72 98 Q68 102 62 102 L28 102 Q22 102 18 98 Q14 94 14 88 L14 32 Q14 26 18 22 Q22 18 28 18 Z M40 28 Q45 28 45 33 Q45 38 40 38 Q35 38 35 33 Q35 28 40 28 Z"/>
+        </svg>`,
+        sg: `<svg class="shape-svg" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+            <path d="M35 15 Q45 10 55 15 L65 20 Q70 25 70 35 L70 50 Q75 55 75 65 L75 85 Q75 95 70 100 Q65 105 55 105 Q45 105 35 100 Q30 95 30 85 L30 65 Q25 55 25 50 L25 35 Q25 25 30 20 Z M45 25 Q50 25 50 30 Q50 35 45 35 Q40 35 40 30 Q40 25 45 25 Z"/>
+        </svg>`,
+        'flying-v': `<svg class="shape-svg" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+            <path d="M45 15 Q50 10 55 15 L75 45 Q80 55 75 65 L65 85 Q60 95 50 100 Q40 95 35 85 L25 65 Q20 55 25 45 Z M45 25 Q50 25 50 30 Q50 35 45 35 Q40 35 40 30 Q40 25 45 25 Z"/>
+        </svg>`,
+        dreadnought: `<svg class="shape-svg" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 30 Q20 20 30 15 Q50 10 70 15 Q80 20 80 30 L80 70 Q80 85 75 95 Q70 105 50 110 Q30 105 25 95 Q20 85 20 70 Z M45 35 Q50 35 50 40 Q50 45 45 45 Q40 45 40 40 Q40 35 45 35 Z"/>
+        </svg>`,
+        concert: `<svg class="shape-svg" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+            <path d="M25 25 Q25 18 32 15 Q50 12 68 15 Q75 18 75 25 L75 75 Q75 88 70 95 Q65 102 50 105 Q35 102 30 95 Q25 88 25 75 Z M45 30 Q50 30 50 35 Q50 40 45 40 Q40 40 40 35 Q40 30 45 30 Z"/>
+        </svg>`,
+        jumbo: `<svg class="shape-svg" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 35 Q15 22 25 15 Q50 8 75 15 Q85 22 85 35 L85 75 Q85 90 78 100 Q70 110 50 115 Q30 110 22 100 Q15 90 15 75 Z M45 40 Q50 40 50 45 Q50 50 45 50 Q40 50 40 45 Q40 40 45 40 Z"/>
+        </svg>`,
+        parlor: `<svg class="shape-svg" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+            <path d="M30 28 Q30 22 35 18 Q50 15 65 18 Q70 22 70 28 L70 72 Q70 82 65 88 Q60 95 50 98 Q40 95 35 88 Q30 82 30 72 Z M45 33 Q50 33 50 38 Q50 43 45 43 Q40 43 40 38 Q40 33 45 33 Z"/>
+        </svg>`,
+        traditional: `<svg class="shape-svg" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+            <path d="M25 25 Q25 18 32 15 Q50 12 68 15 Q75 18 75 25 L75 75 Q75 88 70 95 Q65 102 50 105 Q35 102 30 95 Q25 88 25 75 Z M45 30 Q50 30 50 35 Q50 40 45 40 Q40 40 40 35 Q40 30 45 30 Z"/>
+        </svg>`,
+        flamenco: `<svg class="shape-svg" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+            <path d="M28 22 Q28 16 34 13 Q50 10 66 13 Q72 16 72 22 L72 78 Q72 86 68 92 Q64 98 50 101 Q36 98 32 92 Q28 86 28 78 Z M45 27 Q50 27 50 32 Q50 37 45 37 Q40 37 40 32 Q40 27 45 27 Z"/>
+        </svg>`,
+        precision: `<svg class="shape-svg" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+            <path d="M30 18 Q35 15 45 15 Q55 15 60 18 L65 23 Q70 28 70 38 L70 82 Q70 92 65 97 L60 102 Q55 105 45 105 Q35 105 30 102 L25 97 Q20 92 20 82 L20 38 Q20 28 25 23 Z M40 28 Q45 28 45 33 Q45 38 40 38 Q35 38 35 33 Q35 28 40 28 Z"/>
+        </svg>`,
+        jazz: `<svg class="shape-svg" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+            <path d="M32 16 Q38 13 48 13 Q58 13 64 16 L68 21 Q72 26 72 36 L72 84 Q72 94 68 99 L64 104 Q58 107 48 107 Q38 107 32 104 L28 99 Q24 94 24 84 L24 36 Q24 26 28 21 Z M42 26 Q47 26 47 31 Q47 36 42 36 Q37 36 37 31 Q37 26 42 26 Z"/>
+        </svg>`,
+        modern: `<svg class="shape-svg" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+            <path d="M28 14 Q34 11 44 11 Q56 11 62 14 L66 19 Q70 24 70 34 L70 86 Q70 96 66 101 L62 106 Q56 109 44 109 Q34 109 28 106 L24 101 Q20 96 20 86 L20 34 Q20 24 24 19 Z M40 24 Q45 24 45 29 Q45 34 40 34 Q35 34 35 29 Q35 24 40 24 Z"/>
+        </svg>`
+    };
+
+    // Populate body shape selector with image cards
     function populateBodyShapeSelector() {
         const selector = document.getElementById('body-shape-selector');
         if (!selector) return;
@@ -788,8 +834,11 @@ function initGuitarBuilder() {
             option.dataset.shape = shape.name;
             option.title = shape.description;
 
-            // Create text-based option with link
+            // Create image card with SVG
             option.innerHTML = `
+                <div class="shape-image">
+                    ${guitarShapeSVGs[shape.value] || guitarShapeSVGs.stratocaster}
+                </div>
                 <div class="shape-content">
                     <div class="shape-name">${shape.name}</div>
                     <div class="shape-description">${shape.description}</div>
@@ -797,7 +846,7 @@ function initGuitarBuilder() {
                        class="shape-link"
                        target="_blank"
                        onclick="event.stopPropagation()">
-                        View 3 ${shape.name} Guitars →
+                        View 4 ${shape.name} Guitars →
                     </a>
                 </div>
             `;
